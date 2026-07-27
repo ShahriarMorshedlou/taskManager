@@ -1,12 +1,13 @@
 package com.tasker.taskmanager.controller;
 
 
+import com.tasker.taskmanager.domain.Task;
 import com.tasker.taskmanager.dto.request.CreateTaskRequest;
+import com.tasker.taskmanager.dto.response.TaskResponse;
 import com.tasker.taskmanager.service.TaskService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/tasks")
@@ -20,6 +21,11 @@ public class TaskController {
     @PostMapping
     public void create(@RequestBody CreateTaskRequest request) {
         taskService.create(request);
+    }
+
+    @GetMapping
+    public List<TaskResponse> taskList (){
+       return taskService.getTasksList();
     }
 
 }
