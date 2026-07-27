@@ -12,12 +12,15 @@ import java.time.LocalDateTime;
 
 @Getter
 @Entity
+@Table(name = "Tasks")
 public class Task {
 
 
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Id
     private Long id;
+
+    private LocalDateTime deadline;
 
     @Column(nullable = false)
     private String title;
@@ -25,8 +28,8 @@ public class Task {
     @Column(nullable = false)
     private String description;
 
-    @Column(nullable = false)
-    private LocalDateTime deadline;
+
+
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
@@ -63,13 +66,12 @@ public class Task {
         this.description = description;
     }
 
-
-    public void setUpdatedAd(LocalDateTime updatedAd) {
-        this.updatedAt = updatedAd;
-    }
-
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public void setPriority(Priority priority) {
+        this.priority = priority;
     }
 
 
