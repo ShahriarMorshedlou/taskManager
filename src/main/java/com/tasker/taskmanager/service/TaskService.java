@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TaskService {
@@ -48,6 +49,22 @@ public class TaskService {
 
             response.add(taskResponse);
         }
+
+        return response;
+    }
+
+
+    public TaskResponse getTaskById(Long id) {
+
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Task not found"));
+
+        TaskResponse response = new TaskResponse(
+                task.getTitle(),
+                task.getDescription(),
+                task.getPriority(),
+                task.getDeadline()
+        );
 
         return response;
     }

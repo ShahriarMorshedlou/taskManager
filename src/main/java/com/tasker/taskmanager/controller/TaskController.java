@@ -28,4 +28,10 @@ public class TaskController {
        return taskService.getTasksList();
     }
 
+    @GetMapping("/{id}")
+    public TaskResponse getTaskById (@PathVariable Long id){
+        return taskService.getTaskById(id);
+    }
+
+
 }
