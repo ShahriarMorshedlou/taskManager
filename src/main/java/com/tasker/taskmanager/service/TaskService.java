@@ -101,6 +101,13 @@ public class TaskService {
 
     }
 
+    public void deleteById(Long id ){
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("can not find this" + id));
+
+        taskRepository.delete(task);
+    }
+
 }
 
 
