@@ -29,8 +29,6 @@ public class Task {
     private String description;
 
 
-
-
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
@@ -74,7 +72,9 @@ public class Task {
         this.priority = priority;
     }
 
-
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 
     @Override
     public String toString() {

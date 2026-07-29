@@ -3,7 +3,9 @@ package com.tasker.taskmanager.controller;
 
 import com.tasker.taskmanager.domain.Task;
 import com.tasker.taskmanager.dto.request.CreateTaskRequest;
+import com.tasker.taskmanager.dto.request.UpdateTaskRequest;
 import com.tasker.taskmanager.dto.response.TaskResponse;
+import com.tasker.taskmanager.dto.response.UpdateTaskResponse;
 import com.tasker.taskmanager.service.TaskService;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,6 +33,14 @@ public class TaskController {
     @GetMapping("/{id}")
     public TaskResponse getTaskById (@PathVariable Long id){
         return taskService.getTaskById(id);
+    }
+
+    @PutMapping("/{id}")
+    public UpdateTaskResponse updateTaskResponse(
+            @PathVariable Long id,
+            @RequestBody UpdateTaskRequest updateTaskRequest
+    ) {
+        return taskService.updateTask(id, updateTaskRequest);
     }
 
 

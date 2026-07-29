@@ -1,5 +1,8 @@
 package com.tasker.taskmanager.dto.response;
+
 import com.tasker.taskmanager.domain.Priority;
+import com.tasker.taskmanager.domain.Status;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,20 +13,15 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-public class TaskResponse {
+@AllArgsConstructor
+public class UpdateTaskResponse {
 
     private Long id;
-
     private String title;
-
     private String description;
-
-    private Priority priority;
-
-    private LocalDateTime deadline;
-
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
 
 }
