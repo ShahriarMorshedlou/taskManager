@@ -55,5 +55,10 @@ public class TaskController {
         return taskService.getTasks(priority);
     }
 
+    @GetMapping (params = "title")
+    public List<TaskResponse> getTasks (@RequestParam String title){
+        return taskService.searchTasks(title);
+    }
+
 
 }

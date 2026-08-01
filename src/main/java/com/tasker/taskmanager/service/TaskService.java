@@ -129,6 +129,25 @@ public class TaskService {
 
     }
 
+    public List<TaskResponse> searchTasks (String title){
+
+        List<Task> tasks = taskRepository.findByTitleContaining(title);
+
+        List<TaskResponse> taskResponseList = new ArrayList<>();
+
+
+        for (Task task: tasks){
+
+            TaskResponse taskResponse = new TaskResponse(
+                    task.getId(),
+                    task.getTitle(),
+                    task.getDescription(),
+                    task.getPriority(),
+                    task.getDeadline()
+            ); taskResponseList.add(taskResponse);
+        } return taskResponseList;
+    }
+
 }
 
 
