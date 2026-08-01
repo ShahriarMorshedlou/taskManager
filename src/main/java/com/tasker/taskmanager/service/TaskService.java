@@ -108,6 +108,27 @@ public class TaskService {
         taskRepository.delete(task);
     }
 
+    public List<TaskResponse> getTasks(Priority priority){
+
+        List<Task> tasks = taskRepository.findByPriority(priority);
+
+        List <TaskResponse> taskResponseList = new ArrayList<>();
+
+        for ( Task task : tasks){
+
+            TaskResponse taskResponse = new TaskResponse(
+                    task.getId(),
+                    task.getTitle(),
+                    task.getDescription(),
+                    task.getPriority(),
+                    task.getDeadline()
+
+            );
+                taskResponseList.add(taskResponse);
+        } return taskResponseList;
+
+    }
+
 }
 
 

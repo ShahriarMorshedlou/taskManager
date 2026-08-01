@@ -1,6 +1,7 @@
 package com.tasker.taskmanager.controller;
 
 
+import com.tasker.taskmanager.domain.Priority;
 import com.tasker.taskmanager.domain.Task;
 import com.tasker.taskmanager.dto.request.CreateTaskRequest;
 import com.tasker.taskmanager.dto.request.UpdateTaskRequest;
@@ -47,6 +48,11 @@ public class TaskController {
     @DeleteMapping("/{id}")
     public void deleteById(@PathVariable Long id){
         taskService.deleteById(id);
+    }
+
+    @GetMapping (params = "priority")
+    public List<TaskResponse> getTasks(@RequestParam Priority priority){
+        return taskService.getTasks(priority);
     }
 
 
