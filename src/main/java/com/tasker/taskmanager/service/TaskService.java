@@ -7,6 +7,7 @@ import com.tasker.taskmanager.dto.request.CreateTaskRequest;
 import com.tasker.taskmanager.dto.request.UpdateTaskRequest;
 import com.tasker.taskmanager.dto.response.TaskResponse;
 import com.tasker.taskmanager.dto.response.UpdateTaskResponse;
+import com.tasker.taskmanager.exceptions.TaskNotFoundException;
 import com.tasker.taskmanager.repository.TaskRepository;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +24,8 @@ public class TaskService {
         this.taskRepository=taskRepository;
     }
 
-    public void create(CreateTaskRequest createTaskRequest){
+    public TaskResponse create(CreateTaskRequest createTaskRequest){
+
         Task task = new Task();
 
         task.setDescription(createTaskRequest.getDescription());
@@ -32,8 +34,15 @@ public class TaskService {
         task.setPriority(Priority.LOW);
 
         taskRepository.save(task);
-    }
 
+        return new TaskResponse(
+                task.getId(),
+                task.getTitle(),
+                task.getDescription(),
+                task.getPriority(),
+                task.getDeadline()
+        );
+    }
 
     public List<TaskResponse> getTasksList() {
 
@@ -61,7 +70,7 @@ public class TaskService {
     public TaskResponse getTaskById(Long id) {
 
         Task task = taskRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Task not found"));
+                .orElseThrow(() -> new TaskNotFoundException( "Task with id " + id + " not found"));
 
         TaskResponse response = new TaskResponse(
                 task.getId(),
@@ -78,7 +87,7 @@ public class TaskService {
     public UpdateTaskResponse updateTask(Long id,UpdateTaskRequest updateTaskRequest){
 
         Task task = taskRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Task not found"));
+                .orElseThrow(() -> new TaskNotFoundException( "Task with id " + id + " not found"));
 
         task.setTitle(updateTaskRequest.getTitle());
         task.setDescription(updateTaskRequest.getDescription());
@@ -103,7 +112,7 @@ public class TaskService {
 
     public void deleteById(Long id ){
         Task task = taskRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("can not find this" + id));
+                .orElseThrow(() -> new TaskNotFoundException( "Task with id " + id + " not found"));
 
         taskRepository.delete(task);
     }

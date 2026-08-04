@@ -1,5 +1,6 @@
 package com.tasker.taskmanager.dto.response;
 import com.tasker.taskmanager.domain.Priority;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

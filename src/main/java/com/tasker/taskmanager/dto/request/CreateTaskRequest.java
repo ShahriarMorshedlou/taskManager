@@ -1,9 +1,16 @@
 package com.tasker.taskmanager.dto.request;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
 public class CreateTaskRequest {
 
+
+
+    @NotBlank
     private String title;
 
+    @Size(max = 500)
     private String description;
 
     public CreateTaskRequest() {
