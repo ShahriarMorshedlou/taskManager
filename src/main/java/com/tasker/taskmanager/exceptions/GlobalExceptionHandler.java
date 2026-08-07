@@ -72,4 +72,17 @@ public class GlobalExceptionHandler {
                 .body(errorResponse);
     }
 
+    @ExceptionHandler (InvalidSortFieldException.class)
+    public ResponseEntity<ErrorResponse> invalidSortExHandler(InvalidSortFieldException ix){
+
+        ErrorResponse errorResponse = new ErrorResponse(
+                ix.getMessage(),
+                400,
+                LocalDateTime.now()
+        );
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(errorResponse);
+
+    }
 }

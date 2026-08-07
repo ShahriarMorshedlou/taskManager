@@ -96,5 +96,13 @@ public class TaskController {
         return ResponseEntity.ok(taskService.searchTasks(title));
     }
 
+    @GetMapping (params="sort")
+    public ResponseEntity<List<TaskResponse>> getTask(
+            @NotBlank
+            @RequestParam String sort){
+        return ResponseEntity
+                .ok(taskService.sortTask(sort));
+    }
+
 
 }

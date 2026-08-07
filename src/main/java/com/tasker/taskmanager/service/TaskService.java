@@ -7,14 +7,17 @@ import com.tasker.taskmanager.dto.request.CreateTaskRequest;
 import com.tasker.taskmanager.dto.request.UpdateTaskRequest;
 import com.tasker.taskmanager.dto.response.TaskResponse;
 import com.tasker.taskmanager.dto.response.UpdateTaskResponse;
+import com.tasker.taskmanager.exceptions.InvalidSortFieldException;
 import com.tasker.taskmanager.exceptions.TaskNotFoundException;
 import com.tasker.taskmanager.repository.TaskRepository;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class TaskService {
@@ -157,6 +160,40 @@ public class TaskService {
         } return taskResponseList;
     }
 
+
+    private static final Set<String> VALID_SORT_FIELDS = Set.of(
+            "title",
+            "priority",
+            "createdAt"
+    );
+
+    public List<TaskResponse> sortTask(String sort) {
+
+        if (!VALID_SORT_FIELDS.contains(sort)) {
+            throw new InvalidSortFieldException("Invalid sort field: " + sort);
+        }
+
+        Sort sortObject = Sort.by(Sort.Direction.ASC, sort);
+
+        List<Task> tasks = taskRepository.findAll(sortObject);
+
+        List<TaskResponse> taskResponseList = new ArrayList<>();
+
+        for (Task task : tasks) {
+
+            TaskResponse taskResponse = new TaskResponse(
+                    task.getId(),
+                    task.getTitle(),
+                    task.getDescription(),
+                    task.getPriority(),
+                    task.getDeadline()
+            );
+
+            taskResponseList.add(taskResponse);
+        }
+
+        return taskResponseList;
+    }
 }
 
 
