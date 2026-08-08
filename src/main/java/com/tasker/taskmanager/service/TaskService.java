@@ -10,6 +10,9 @@ import com.tasker.taskmanager.dto.response.UpdateTaskResponse;
 import com.tasker.taskmanager.exceptions.InvalidSortFieldException;
 import com.tasker.taskmanager.exceptions.TaskNotFoundException;
 import com.tasker.taskmanager.repository.TaskRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -193,6 +196,28 @@ public class TaskService {
         }
 
         return taskResponseList;
+    }
+
+
+    public List<TaskResponse> pagination(int page, int size,String sort){
+
+        if (!VALID_SORT_FIELDS.contains(sort)){
+            throw new InvalidSortFieldException("Invalid sort field: " + sort);
+        }
+
+        Sort sort1 = Sort.by(Sort.Direction.ASC, sort);
+        Pageable pageable = PageRequest.of(page,size,sort1);
+        Page<Task> taskPage = taskRepository.findAll(pageable);
+
+        return taskPage.getContent()
+                .stream()
+                .map(task -> new TaskResponse(
+                        task.getId(),
+                        task.getTitle(),
+                        task.getDescription(),
+                        task.getPriority(),
+                        task.getDeadline()
+                )).toList();
     }
 }
 

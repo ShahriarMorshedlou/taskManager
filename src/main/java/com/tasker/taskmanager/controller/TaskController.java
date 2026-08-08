@@ -16,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.lang.annotation.Native;
 import java.util.List;
 
 
@@ -102,6 +104,18 @@ public class TaskController {
             @RequestParam String sort){
         return ResponseEntity
                 .ok(taskService.sortTask(sort));
+    }
+
+    @GetMapping (params = {"page", "size"})
+    public ResponseEntity<List<TaskResponse>> pagination(
+
+            @RequestParam int page,
+            @RequestParam int size,
+            @NotBlank
+            @RequestParam String sort
+    ) {
+        return ResponseEntity
+                .ok(taskService.pagination(page,size,sort));
     }
 
 
