@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Task Detail</title>
+</head>
+<body>
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-info text-white">
+                        <h1 class="h4 mb-0">Task Details</h1>
+                    </div>
+                    <div class="card-body" id="taskDetailContainer">
+                        <div class="alert alert-info">Loading task details...</div>
+                    </div>
+
+                    <div id="editSection" style="display: none;" class="card-body border-top border-warning">
+                        <h5 class="text-warning">Edit Task</h5>
+                        <form id="editForm">
+                            <div class="mb-3">
+                                <label for="editTitle" class="form-label">Title</label>
+                                <input type="text" id="editTitle" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editDescription" class="form-label">Description</label>
+                                <textarea id="editDescription" class="form-control" rows="3"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editPriority" class="form-label">Priority</label>
+                                <select id="editPriority" class="form-select">
+                                    <option value="LOW">LOW</option>
+                                    <option value="MEDIUM">MEDIUM</option>
+                                    <option value="HIGH">HIGH</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editStatus" class="form-label">Status</label>
+                                <select id="editStatus" class="form-select">
+                                    <option value="TODO">TODO</option>
+                                    <option value="IN_PROGRESS">IN_PROGRESS</option>
+                                    <option value="DONE">DONE</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-success">Save Changes</button>
+                            <button type="button" id="cancelEditBtn" class="btn btn-secondary">Cancel</button>
+                        </form>
+                    </div>
+
+                    <div class="card-footer d-flex justify-content-between">
+                        <a href="index.html" class="btn btn-secondary">Back to List</a>
+                        <button id="editBtn" class="btn btn-warning">Edit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const taskId = urlParams.get('id');
+
+            if (!taskId) {
+                document.getElementById('taskDetailContainer').innerHTML = 
+                    '<div class="alert alert-danger">No task ID provided.</div>';
+                return;
+            }
+
+            let currentTask = null;
+
+            function loadTask() {
+                fetch(`http://localhost:8080/tasks/${taskId}`)
+                    .then(response => {
+                        if (!response.ok) throw new Error('Task not found');
+                        return response.json();
+                    })
+                    .then(task => {
+                        currentTask = task;
+                        displayTask(task);
+                    })
+                    .catch(error => {
+                        document.getElementById('taskDetailContainer').innerHTML = 
+                            `<div class="alert alert-danger">Error: ${error.message}</div>`;
+                        console.error('Error:', error);
+                    });
+            }
+
+            function displayTask(task) {
+                const container = document.getElementById('taskDetailContainer');
+                container.innerHTML = `
+                    <h5>${task.title}</h5>
+                    <p><strong>Description:</strong> ${task.description || 'No description'}</p>
+                    <p><strong>Priority:</strong> <span class="badge bg-primary">${task.priority || 'N/A'}</span></p>
+                    <p><strong>Status:</strong> <span class="badge bg-secondary">${task.status || 'TODO'}</span></p>
+                    <p><strong>Deadline:</strong> ${task.deadline || 'Not set'}</p>
+                `;
+            }
+
+            function fillEditForm(task) {
+                document.getElementById('editTitle').value = task.title || '';
+                document.getElementById('editDescription').value = task.description || '';
+                document.getElementById('editPriority').value = task.priority || 'LOW';
+                document.getElementById('editStatus').value = task.status || 'TODO';
+            }
+
+            document.getElementById('editBtn').addEventListener('click', function() {
+                const editSection = document.getElementById('editSection');
+                if (editSection.style.display === 'none') {
+                    fillEditForm(currentTask);
+                    editSection.style.display = 'block';
+                    this.textContent = 'Cancel Edit';
+                } else {
+                    editSection.style.display = 'none';
+                    this.textContent = 'Edit';
+                }
+            });
+
+            document.getElementById('cancelEditBtn').addEventListener('click', function() {
+                document.getElementById('editSection').style.display = 'none';
+                document.getElementById('editBtn').textContent = 'Edit';
+            });
+
+            document.getElementById('editForm').addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                const updatedTask = {
+                    title: document.getElementById('editTitle').value,
+                    description: document.getElementById('editDescription').value,
+                    priority: document.getElementById('editPriority').value,
+                    status: document.getElementById('editStatus').value
+                };
+
+                fetch(`http://localhost:8080/tasks/${taskId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(updatedTask)
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error('Failed to update task');
+                    return response.json();
+                })
+                .then(data => {
+                    alert('Task updated successfully!');
+                    document.getElementById('editSection').style.display = 'none';
+                    document.getElementById('editBtn').textContent = 'Edit';
+                    loadTask();
+                })
+                .catch(error => {
+                    alert('Error updating task: ' + error.message);
+                    console.error('Error:', error);
+                });
+            });
+
+            loadTask();
+        });
+    </script>
+</body>
+</html>
