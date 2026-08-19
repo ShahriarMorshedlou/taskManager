@@ -23,7 +23,7 @@ import java.util.List;
 
 @Validated
 @RestController
-@CrossOrigin(origins = "http://127.0.0.1:5500")
+@CrossOrigin(origins = {"http://127.0.0.1:5500", "http://localhost:5500"})
 @RequestMapping("/tasks")
 public class TaskController {
     private final TaskService taskService;
@@ -111,7 +111,6 @@ public class TaskController {
 
             @RequestParam int page,
             @RequestParam int size,
-            @NotBlank
             @RequestParam String sort
     ) {
         return ResponseEntity
