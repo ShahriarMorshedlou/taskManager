@@ -23,7 +23,7 @@ import java.util.List;
 
 @Validated
 @RestController
-
+@CrossOrigin(origins = "http://127.0.0.1:5500")
 @RequestMapping("/tasks")
 public class TaskController {
     private final TaskService taskService;
