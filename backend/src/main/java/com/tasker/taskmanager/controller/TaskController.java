@@ -7,6 +7,10 @@ import com.tasker.taskmanager.dto.request.UpdateTaskRequest;
 import com.tasker.taskmanager.dto.response.TaskResponse;
 import com.tasker.taskmanager.dto.response.UpdateTaskResponse;
 import com.tasker.taskmanager.service.TaskService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -32,6 +36,20 @@ public class TaskController {
         this.taskService = taskService;
     }
 
+
+
+
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "201",
+                    description = "Task created successfully"
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Invalid task data"
+            )
+    })
+    @Operation(summary = "Create a new task")
     @PostMapping
     public ResponseEntity<TaskResponse> create(
             @Valid
@@ -46,11 +64,34 @@ public class TaskController {
 
     }
 
+
+    @Operation(summary = "Get All Tasks")
+    @ApiResponse(
+            responseCode = "200",
+            description = "Tasks retrieved successfully"
+    )
     @GetMapping
     public ResponseEntity<List<TaskResponse>> taskList (){
        return ResponseEntity.ok(taskService.getTasksList());
     }
 
+
+
+    @Operation(summary = "Get task by ID")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Task retrieved successfully"
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "ID must be positive"
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Task not found"
+            )
+    })
     @GetMapping("/{id}")
     public ResponseEntity<TaskResponse> getTaskById (
             @Positive
@@ -63,6 +104,23 @@ public class TaskController {
                 .body(taskResponse);
     }
 
+
+
+    @Operation(summary = "Update a task")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Task updated successfully"
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Invalid task data or ID"
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Task not found"
+            )
+    })
     @PutMapping("/{id}")
     public ResponseEntity <UpdateTaskResponse> updateTaskResponse(
             @Positive
@@ -76,6 +134,22 @@ public class TaskController {
     }
 
 
+
+    @Operation(summary = "Delete a task")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "Task deleted successfully"
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "ID must be positive"
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Task not found"
+            )
+    })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteById(
             @Positive
@@ -85,10 +159,14 @@ public class TaskController {
                .status(HttpStatus.NO_CONTENT).build();
     }
 
+
+
     @GetMapping (params = "priority")
     public ResponseEntity <List<TaskResponse>> getTasks(@RequestParam Priority priority){
          return ResponseEntity.ok(taskService.getTasks(priority));
     }
+
+
 
 
     @GetMapping (params = "title")
@@ -97,6 +175,7 @@ public class TaskController {
             @RequestParam String title){
         return ResponseEntity.ok(taskService.searchTasks(title));
     }
+
 
     @GetMapping (params="sort")
     public ResponseEntity<List<TaskResponse>> getTask(
